@@ -1,0 +1,102 @@
+set ns [new Simulator]
+set nf [open out.nam w]
+set nt [open out.tr w]
+set packetSize 1460
+Agent/TCP set packetSize_ $packetSize
+Agent/TCP/FullTcp set segsize_ $packetSize
+
+$ns namtrace-all $nf
+$ns trace-all $nt
+$ns color 1 Blue
+$ns color 2 Red
+$ns color 3 Blue
+$ns color 4 Green
+$ns color 0 Black
+proc finish {} {
+    global ns nf nt
+    $ns flush-trace
+    close $nf
+    close $nt
+    exit 0
+}
+
+Class Application/ClientApp -superclass Application
+
+Application/ClientApp instproc on_start {} {
+    $self ready
+}
+
+Application/ClientApp instproc recv {count} {
+    $self ready
+}
+
+Application/ClientApp instproc ready {} {
+    $self send 1000
+}
+
+Class Application/ServerApp -superclass Application
+
+Application/ServerApp instproc recv {count} {
+    $self send 1
+}
+
+Application/ServerApp instproc on_start {} {
+    [$self agent] listen
+}
+
+proc create_app {ns tcpc tcps} {
+    set appc [new Application/ClientApp]
+    set apps [new Application/ServerApp]
+    $appc attach-agent $tcpc;
+    $apps attach-agent $tcps;
+    # puts "apps [[$apps info class] info instprocs]"
+    # puts [[$tcpc info class] info instprocs]
+    $ns at 0 "$apps start"
+    $ns at 0 "$appc start"
+    $ns at 4.95 "$appc stop"
+    $ns at 4.95 "$apps stop"
+    return {$appc $apps}
+}
+set client [$ns node]
+set router [$ns node]
+$ns duplex-link $client $router 2Mb 100ms DropTail
+
+for {set i 1} {$i <= 4} {incr i} {
+  set server($i) [$ns node]
+  $ns duplex-link $router $server($i) 1Mb 10ms DropTail
+  # $ns duplex-link-op $client $server($i) queuePos 0.5
+  # set tcp($i) [new Agent/TCP/Linux]
+  # set tcpsink($i) [new Agent/TCPSink]
+  # $tcp($i) set class_ $i
+  # set cbr($i) [new Application/Traffic/CBR]
+  # $cbr($i) set packetSize_ 500
+  # $cbr($i) set interval_ 0.005
+  # $cbr($i) attach-agent $tcp($i)
+  # $ns attach-agent $server($i) $tcpsink($i)
+  # $ns attach-agent $client $tcp($i)
+  # $ns connect $tcp($i) $tcpsink($i)
+  set tcp_list [$ns create-connection-list TCP/FullTcp $client TCP/FullTcp $server($i) 0]
+  set tcpc($i) [lindex $tcp_list 0]
+  set tcps($i) [lindex $tcp_list 1]
+
+  # set tcpc($i) [new Agent/TCP/FullTcp]
+  # set tcps($i) [new Agent/TCP/FullTcp]
+  # $ns attach-agent $client $tcpc($i)
+  # $ns attach-agent $server($i) $tcps($i)
+  # $ns connect $tcpc($i) $tcps($i)
+  $tcpc($i) set class_ $i
+  $tcps($i) set class_ 0
+  set app($i) [create_app $ns $tcpc($i) $tcps($i)]
+
+  # set app($i) [new Application]
+  # $app($i) proc start {} {
+  #     $self send -1
+  # }
+  # $app($i) attach-agent $tcp($i)
+  # set traffic($i) [new Application/FTP]
+  # $traffic($i) attach-agent $tcp($i)
+  # $ns at 0.05 "$traffic($i) start"
+  # $ns at 4.95 "$traffic($i) stop"
+}
+$ns at 5.0 "finish"
+$ns run
