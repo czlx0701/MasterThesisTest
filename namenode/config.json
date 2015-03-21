@@ -1,0 +1,9 @@
+{
+    "copies":    3,
+    "blocksize": 67108864,
+    "blocksize_small": 1048576,
+    "namenode":  "172.31.24.219",
+    "datanode":  [
+        "172.31.24.219"
+    ]
+}
