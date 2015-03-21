@@ -1,4 +1,4 @@
-namenode/*.dat*
+transcode/namenode/*.dat*
 # vim
 *.sw[np]
 
