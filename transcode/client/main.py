@@ -34,7 +34,7 @@ class TaskDispatchRecv(MessageRecv):
         for name in self.outputs:
             os.unlink(name)
 
-    def __build_cmdline(self):
+    def __build_cmdline(self, configs):
         task = self.task
         cmdline = [
             Config.conv_exe,
@@ -42,19 +42,31 @@ class TaskDispatchRecv(MessageRecv):
             Config.conv_args['length'], str(task['length']),
             Config.conv_args['input'],  task['filename']
         ]
-        for config in task['configs']:
+        for config in configs:
             cmdline.extend(config)
             cmdline.extend([
                 Config.conv_args['output'], self.__create_output()
             ])
         return cmdline
 
+    def __start_batch(self, ret_code):
+        configs = self.task['configs'][self.index : self.index + self.batch_size]
+        if len(configs) < 1:
+            self.send_finish(ret_code)
+        else:
+            if ret_code:
+                logging.error('failed to finish the transcode task: %s', self.task)
+            cmdline = self.__build_cmdline(configs)
+            process = Subprocess(cmdline, stdin = Subprocess.STREAM)
+            process.stdin.close()
+            self.index += len(configs)
+            process.set_exit_callback(self.__start_batch)
+
     def handle(self):
+        self.index = 0
+        self.batch_size = 4
         self.outputs = []
-        cmdline = self.__build_cmdline()
-        process = Subprocess(cmdline, stdin = Subprocess.STREAM)
-        process.stdin.close()
-        process.set_exit_callback(self.send_finish)
+        self.__start_batch(0)
 
     @classmethod
     def get_type(cls):
