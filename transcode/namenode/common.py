@@ -14,5 +14,6 @@ def add_lib_path(path = None):
 
 def init_base():
     logging.basicConfig(
+            format= '%(asctime)s %(module)s(%(lineno)d) %(levelname)s %(funcName)s %(threadName)s: %(message)s',
             level = logging.INFO)
     add_lib_path()

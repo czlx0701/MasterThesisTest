@@ -1,0 +1,3 @@
+#!/bin/sh
+daemon -o ~/logs/server.log -D `pwd` --name=transcode_server -r -- python ./main.py
+

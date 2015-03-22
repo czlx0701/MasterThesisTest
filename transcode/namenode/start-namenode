@@ -1,0 +1,3 @@
+#!/bin/sh
+daemon -o ~/logs/namenode.log -D `pwd` --name=transcode_namenode -r -- python ./main.py
+
