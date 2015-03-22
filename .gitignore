@@ -1,3 +1,5 @@
+avconv
+avprobe
 transcode/namenode/*.dat*
 # vim
 *.sw[np]

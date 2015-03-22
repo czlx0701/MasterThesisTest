@@ -1,0 +1,11 @@
+{
+    "conv_exe":    "./avconv",
+    "conv_args":   {
+        "start":   "-ss",
+        "length":  "-t",
+        "input":   "-i"
+    },
+    "name":        "Worker 1",
+    "server_host": "172.31.24.219",
+    "server_port": 6666
+}
