@@ -3,7 +3,8 @@
     "conv_args":   {
         "start":   "-ss",
         "length":  "-t",
-        "input":   "-i"
+        "input":   "-i",
+        "output":  "-y"
     },
     "name":        "Worker 1",
     "server_host": "172.31.24.219",

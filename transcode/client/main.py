@@ -2,10 +2,11 @@
 from common import init_base
 init_base()
 
-from datetime import timedelta
 import logging
 import os
-from tornado import ioloop, gen
+import tempfile
+from tornado import ioloop
+from tornado.process import Subprocess
 
 from basemessage import MessageRecv, MessageSend
 from config import Config
@@ -16,13 +17,44 @@ class TaskDispatchRecv(MessageRecv):
         self.task = self.body['task']
         return True
 
-    def send_finish(self):
+    def send_finish(self, ret_code):
         msg = SubtaskFinishSend(self.task['id'])
         self.reply(msg)
+        if ret_code:
+            logging.error('failed to finish the transcode task: %s', self.task)
+        self.__cleanup()
+
+    def __create_output(self):
+        (handle, filename) = tempfile.mkstemp()
+        os.close(handle)
+        self.outputs.append(filename)
+        return filename
+
+    def __cleanup(self):
+        for name in self.outputs:
+            os.unlink(name)
+
+    def __build_cmdline(self):
+        task = self.task
+        cmdline = [
+            Config.conv_exe,
+            Config.conv_args['start'],  str(task['start']),
+            Config.conv_args['length'], str(task['length']),
+            Config.conv_args['input'],  task['filename']
+        ]
+        for config in task['configs']:
+            cmdline.extend(config)
+            cmdline.extend([
+                Config.conv_args['output'], self.__create_output()
+            ])
+        return cmdline
 
     def handle(self):
-        ioloop.IOLoop.instance().add_timeout(
-            timedelta(microseconds=100000), self.send_finish)
+        self.outputs = []
+        cmdline = self.__build_cmdline()
+        process = Subprocess(cmdline, stdin = Subprocess.STREAM)
+        process.stdin.close()
+        process.set_exit_callback(self.send_finish)
 
     @classmethod
     def get_type(cls):
