@@ -22,7 +22,7 @@ class FileHandler(RequestHandler):
             # (handle, filename) = tempfile.mkstemp()
             # os.unlink(filename)
             # self.tempfile = handle
-            self.request.connection.set_max_body_size(5 * 1024 * 1024 * 1024)
+            self.request.connection.set_max_body_size(10 * 1024 * 1024 * 1024)
             self.target_len  = int(self.request.headers['Content-Length'])
             self.current_pos = 0
             self.blocks = []

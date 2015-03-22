@@ -6,7 +6,7 @@
         "input":   "-i",
         "output":  "-y"
     },
-    "name":        "Worker 1",
+    "name":        "Worker 0",
     "server_host": "172.31.24.219",
     "server_port": 6666
 }
