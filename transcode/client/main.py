@@ -45,7 +45,7 @@ class TaskDispatchRecv(MessageRecv):
         for config in configs:
             cmdline.extend(config)
             cmdline.extend([
-                Config.conv_args['output'], self.__create_output()
+                Config.conv_args['output'], '/dev/null' # self.__create_output()
             ])
         return cmdline
 
