@@ -40,7 +40,7 @@ Application/ClientApp instproc on_start {} {
 	$self instvar alpha_ beta_
     set time_ -1
     set min_time_ 0.25
-    set time_thre_ 2
+    set time_thre_ 20
     # 1M
     set last_size_ [expr 1024 * 1024]
     set bandwidth_ -1
@@ -133,7 +133,7 @@ proc create_app {ns manager tcpc tcps} {
 
 set manager [new BatchSendManager $fileSize $server_num]
 for {set i 1} {$i <= $server_num} {incr i} {
-    set tcp_list [$ns create-connection-list TCP/FullTcp $client TCP/FullTcp $server($i) 0]
+    set tcp_list [$ns create-connection-list TCP/FullTcp/Sack $client TCP/FullTcp/Sack $server($i) 0]
     set tcpc($i) [lindex $tcp_list 0]
     set tcps($i) [lindex $tcp_list 1]
     $tcpc($i) set class_ $i

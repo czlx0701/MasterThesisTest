@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+import logging
+import os
+
+def build_file_list():
+    BASE_DIR = '/Users/liuxiao/Documents/Videos/test'
+    PATTERNS = ['Sintel.720p.%04d.ts', 'Sintel.480p.%04d.ts']
+    result   = []
+    for index in range(444):
+        names = []
+        for pattern in PATTERNS:
+            filename = os.path.join(BASE_DIR, pattern % index)
+            if not os.path.exists(filename):
+                break
+            names.append(filename)
+        if len(names) == len(PATTERNS):
+            result.append(names)
+        else:
+            break
+    logging.info('found %d pieces.', len(result))
+    return result
+
+def main():
+    pass
+
+if __name__ == '__main__':
+    logging.basicConfig(
+            level = logging.INFO)
+    main()
+

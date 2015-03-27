@@ -1,0 +1,14 @@
+#!/bin/bash
+
+gnuplot -persist<<EOF
+
+set terminal pdf color enhanced font "Times-Roman, 10.5"
+set output "delay.pdf"
+set title "delay"
+set xlabel "simulation time"
+set ylabel "throughput/kbps"
+unset key
+
+plot "delay" with linespoints
+
+EOF
