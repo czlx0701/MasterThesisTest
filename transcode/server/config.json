@@ -7,7 +7,9 @@
         ["-s",   "640x360", "-acodec",    "aac", "-ab",  "96000", "-ac", "2", "-vcodec", "libx264", "-vprofile", "baseline", "-vb",  "500000", "-f", "mp4", "-strict", "-2"],
         ["-s",   "854x480", "-acodec",    "aac", "-ab",  "96000", "-ac", "2", "-vcodec", "libx264", "-vprofile", "main",     "-vb", "1000000", "-f", "mp4", "-strict", "-2"],
         ["-s",  "1280x720", "-acodec",    "aac", "-ab", "192000", "-ac", "2", "-vcodec", "libx264", "-vprofile", "high",     "-vb", "3000000", "-f", "mp4", "-strict", "-2"],
-        ["-s", "1920x1080", "-acodec",    "aac", "-ab", "192000", "-ac", "2", "-vcodec", "libx264", "-vprofile", "high",     "-vb", "5900000", "-f", "mp4", "-strict", "-2"],
+        ["-s", "1920x1080", "-acodec",    "aac", "-ab", "192000", "-ac", "2", "-vcodec", "libx264", "-vprofile", "high",     "-vb", "5900000", "-f", "mp4", "-strict", "-2"]
+    ],
+    "conv_config_disabled": [
         ["-s",   "640x360", "-acodec", "vorbis", "-ab", "128000", "-ac", "2", "-vcodec", "vp8",                              "-vb",  "500000", "-f", "webm", "-strict", "-2"],
         ["-s",   "854x480", "-acodec", "vorbis", "-ab", "128000", "-ac", "2", "-vcodec", "vp8",                              "-vb", "1000000", "-f", "webm", "-strict", "-2"],
         ["-s",  "1280x720", "-acodec", "vorbis", "-ab", "192000", "-ac", "2", "-vcodec", "vp8",                              "-vb", "2000000", "-f", "webm", "-strict", "-2"],

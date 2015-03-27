@@ -67,6 +67,24 @@ class Manager(object):
         task['blocks'] += 1
         task['subtasks'].add(subtask['id'])
 
+    # def __create_subtask(self, duration, time_unit, task):
+    #     task = dict(task)
+    #     task_id = task['id']
+    #     del task['id']
+    #     task_item = {
+    #         'id':       task_id,
+    #         'task':     task,
+    #         'subtasks': set(),
+    #         'blocks':   0,
+    #     }
+    #     self.running_task[task_item['id']] = task_item
+    #     start = 0
+    #     length = min(duration, time_unit)
+    #     while start < duration - 1e-5:
+    #         length = min(duration - start, duration / 10)
+    #         self.__add_subtask(start, length, task_item)
+    #         start += length
+
     def __create_subtask(self, duration, time_unit, task):
         task = dict(task)
         task_id = task['id']
@@ -87,6 +105,20 @@ class Manager(object):
             self.__add_subtask(start, length, task_item)
             start += length
 
+    # def __create_subtask(self, duration, time_unit, task):
+    #     task = dict(task)
+    #     task_id = task['id']
+    #     del task['id']
+    #     task_item = {
+    #         'id':       task_id,
+    #         'task':     task,
+    #         'subtasks': set(),
+    #         'blocks':   0,
+    #     }
+    #     self.running_task[task_item['id']] = task_item
+    #     start = 0
+    #     self.__add_subtask(start, duration, task_item)
+
     def __parse_probe(self, out, err, task):
         try:
             data = json.loads(out.decode('iso8859-1'))
@@ -96,7 +128,7 @@ class Manager(object):
             size = int(float(data['size']))
             if duration < 1:
                 duration = size / bitrate
-            time_unit = Config.blocksize / bitrate / Config.copies / 2 / Config.parallel
+            time_unit = Config.blocksize / bitrate / Config.copies / Config.parallel
             self.__create_subtask(duration, time_unit, task)
         except Exception:
             logging.exception('failed to probe %s.\n stdout:\n%s\nstderr:\n%s',
